@@ -1,0 +1,4 @@
+.env-yc-unethical
+.venv
+.env
+__pycache__
