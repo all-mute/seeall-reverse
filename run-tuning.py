@@ -26,7 +26,7 @@ def main():
     print("--------------------------------")
 
     # Зададим датасет для обучения и базовую модель
-    train_dataset = sdk.datasets.get("fds90odctgfid278t1kj")
+    train_dataset = sdk.datasets.get("fdsuptf94qs4t5of11rf")
     print(train_dataset)
     base_model = sdk.models.completions("yandexgpt-lite")
     
@@ -42,13 +42,15 @@ def main():
 
     # Определяем минимальные параметры
     # Используйте base_model.tune_deferred(), чтобы контролировать больше параметров
-    tuned_model = base_model.tune(train_dataset, name=str(uuid.uuid4()))
+    tuned_model = base_model.tune(train_dataset, name=(str(uuid.uuid4()) + "-X-flipped"))
     #tuned_model = base_model.tune_deferred(train_dataset, name=str(uuid.uuid4()))
     print(f"Resulting {tuned_model}")
 
     # Запускаем дообучение
     completion_result = tuned_model.run("hey!")
     print(f"{completion_result=}")
+
+    return
 
     # Сохраним URI дообученной модели
     tuned_uri = tuned_model.uri

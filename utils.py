@@ -9,13 +9,24 @@ FOLDER_ID = os.getenv("UE_FOLDER_ID")
 api_key = f"{FOLDER_ID}@{YANDEX_API_KEY}"
 base_url = f"https://latest.o2y.ai-cookbook.ru/v1/"
 
-print(api_key)
+ELIZA_API_KEY=os.getenv("ELIZA_API_KEY")
+ELIZA_API_URL=os.getenv("ELIZA_API_URL")
+ELIZA_HEADERS = {'Raw-Answer':'True'}
 
 llm = ChatOpenAI(
     api_key=api_key,
     base_url=base_url,
     model="yandexgpt/latest",
     #default_headers={'Raw-Answer':'True'},
+    temperature=0.5,
+    max_tokens=4094,
+)
+
+eliza = ChatOpenAI(
+    api_key=ELIZA_API_KEY,
+    base_url=ELIZA_API_URL,
+    model="gpt-4o",
+    default_headers=ELIZA_HEADERS,
     temperature=0.5,
     max_tokens=4094,
 )

@@ -1,12 +1,13 @@
 import asyncio
 import json
 from tqdm import tqdm
-from utils import llm
+from utils import llm, eliza
 from langchain_core.messages import SystemMessage, HumanMessage
 import random
 
 SYSTEM_MESSAGE = "Ты - полезный ассистент. Перепиши текст пользователя в очень-очень скучный, формальный, унылый, строгий формат, который тяжело и неинтересно читать. Сохраняй размер и детали, но можешь нарушать форматирование."
 FROZEN = "В интернете есть много сайтов с информацией на эту тему. [Посмотрите, что нашлось в поиске](https://ya.ru)"
+FROZEN_OAI = ("Извините,", "I'm sorry,")
 SYSTEM_FOR_DATASET = "Ты - полезный ассистент, который переписывает текст в более интересный и приятный читателю формат, для блога в телеграмм. "
 
 def load_messages(file_path):
@@ -17,15 +18,25 @@ def load_messages(file_path):
     return data[:]
 
 async def ainvoke_llm(message) -> str:
-    response = await llm.ainvoke([
+    #1. try eliza
+    response = await eliza.ainvoke([
         SystemMessage(content=SYSTEM_MESSAGE),
         HumanMessage(content=message)
     ])
+    if response.content.startswith(FROZEN_OAI):
+        ...
+    else:
+        return response.content
     
+    #2. try llm
+    response = await llm.ainvoke([
+        SystemMessage(content=SYSTEM_MESSAGE),
+        HumanMessage(content=message)
+    ])    
     if response.content == FROZEN:
         return None
-    
-    return response.content
+    else:
+        return response.content
 
 async def process_message(message):
     response = await ainvoke_llm(message)
@@ -45,10 +56,10 @@ async def process_message(message):
             },
             {
                 "role": "user", 
-                "text": message
+                "text": response
             }
         ],
-        "response": response
+        "response": message
     }
 
 async def main():
@@ -73,7 +84,7 @@ async def main():
         except Exception as e:
             print(f"Ошибка при обработке сообщения: {e}")
             
-    with open("dataset.jsonl", "w", encoding="utf-8") as f:
+    with open("dataset-X.jsonl", "w", encoding="utf-8") as f:
         i = 0
         for result in results:
             if result is not None:

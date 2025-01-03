@@ -9,14 +9,17 @@ FOLDER_ID = os.getenv("UE_FOLDER_ID")
 api_key = f"{FOLDER_ID}@{YANDEX_API_KEY}"
 base_url = f"https://latest.o2y.ai-cookbook.ru/v1/"
 
-file_name = 'seeall0'
+########################################################
+file_name = '2prod'
+########################################################
+
 with open(f'r/in/{file_name}.txt', 'r') as file:
     test_text = file.read()
 
 llm = ChatOpenAI(
     api_key=api_key,
     base_url=base_url,
-    model="gpt://b1glma7ae7cm9j2908sk/yandexgpt-lite/latest@tamr1hh1ss1kiotep4bd0",
+    model="gpt://b1glma7ae7cm9j2908sk/yandexgpt-lite/latest@tamrrbpdnuksr6eorf2r2",
     #model="yandexgpt-lite/latest",
     temperature=0,
     max_tokens=4094,
